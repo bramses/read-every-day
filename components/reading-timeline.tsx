@@ -321,7 +321,25 @@ export function ReadingTimeline({ data }: ReadingTimelineProps) {
       <main className="timeline-main">
         <header className="timeline-header">
           <h1 className="timeline-title">Read. Every Day.</h1>
-          <p className="timeline-date">{selectedDate ? formatDbDate(selectedDate) : "No reading days yet"}</p>
+          <div className="timeline-header-nav">
+            <button
+              type="button"
+              className="day-nav-button"
+              onClick={() => setSelectedIndex((index) => Math.max(index - 1, 0))}
+              disabled={boundedSelectedIndex <= 0}
+            >
+              Previous Day
+            </button>
+            <p className="timeline-date">{selectedDate ? formatDbDate(selectedDate) : "No reading days yet"}</p>
+            <button
+              type="button"
+              className="day-nav-button"
+              onClick={() => setSelectedIndex((index) => Math.min(index + 1, maxSliderIndex))}
+              disabled={boundedSelectedIndex >= maxSliderIndex}
+            >
+              Next Day
+            </button>
+          </div>
         </header>
 
         {data.error ? <p className="timeline-error">{data.error}</p> : null}
