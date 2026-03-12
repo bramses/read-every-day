@@ -320,7 +320,7 @@ export function ReadingTimeline({ data }: ReadingTimelineProps) {
     <div className="timeline-app">
       <main className="timeline-main">
         <header className="timeline-header">
-          <h1 className="timeline-title">Read Every Day</h1>
+          <h1 className="timeline-title">Read. Every Day.</h1>
           <p className="timeline-date">{selectedDate ? formatDbDate(selectedDate) : "No reading days yet"}</p>
         </header>
 
