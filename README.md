@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Read Every Day
 
-## Getting Started
+Next.js + Supabase reading tracker with:
+- `red_`-prefixed Supabase tables
+- book metadata (`title`, `author`, `image_url`)
+- daily rows (`book_id`, `entry_date`, `eod_percentage`, `thoughts[]`, `flashcards_count`)
+- timeline slider from first DB day to last DB day
+- animated day-to-day progress + thoughts modal
 
-First, run the development server:
+## 1) Environment
+
+Create `.env.local`:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 2) Supabase schema
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Run [`supabase/schema.sql`](/Users/bram/Dropbox/PARA/Projects/read-every-day/supabase/schema.sql) in the Supabase SQL editor.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Tables:
+- `public.red_books`
+- `public.red_progress_entries`
 
-## Learn More
+## 3) Run app
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm install
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 4) Insert data examples
 
-## Deploy on Vercel
+```sql
+insert into public.red_books (title, author, image_url)
+values
+  ('Virtue Hoarders', 'Catherine Liu', 'https://example.com/virtue-hoarders.jpg'),
+  ('Italian Villas & Their Gardens', 'Edith Wharton', 'https://example.com/italian-villas.jpg');
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+insert into public.red_progress_entries (book_id, entry_date, eod_percentage, thoughts, flashcards_count)
+values
+  ('BOOK_UUID_1', '2026-03-01', 58, array['Strong chapter on class framing', 'Need to revisit intro'], 0),
+  ('BOOK_UUID_2', '2026-03-01', 30, array[]::text[], 3);
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+`red_progress_entries` enforces one row per book/day (`unique(book_id, entry_date)`).
