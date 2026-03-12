@@ -12,7 +12,7 @@
   --modal-bg: #ffffff;
   --overlay: rgba(15, 23, 42, 0.45);
   --slider-track-height: 8px;
-  --slider-thumb-size: clamp(18px, 2.2vh, 26px);
+  --slider-thumb-size: clamp(28px, 3vh, 40px);
   --footer-height: clamp(76px, 11vh, 116px);
   --row-height: clamp(86px, calc((100dvh - var(--footer-height) - 120px) / 5), 170px);
 }
@@ -337,9 +337,8 @@ body {
   appearance: none;
   -webkit-appearance: none;
   background: transparent;
-  height: clamp(24px, 3vh, 32px);
+  height: clamp(34px, 4vh, 46px);
   cursor: pointer;
-  accent-color: #2563eb;
 }
 
 .timeline-slider:disabled {
@@ -366,7 +365,11 @@ body {
   height: var(--slider-thumb-size);
   border-radius: 999px;
   border: 2px solid #f8fafc !important;
-  background: #2563eb !important;
+  background-color: transparent !important;
+  background-image: url("/leda.jpeg") !important;
+  background-position: center !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.28);
   margin-top: calc((var(--slider-track-height) - var(--slider-thumb-size)) / 2);
 }
@@ -376,14 +379,12 @@ body {
   height: var(--slider-thumb-size);
   border-radius: 999px;
   border: 2px solid #f8fafc !important;
-  background: #2563eb !important;
+  background-color: transparent !important;
+  background-image: url("/leda.jpeg") !important;
+  background-position: center !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
   box-shadow: 0 2px 8px rgba(15, 23, 42, 0.28);
-}
-
-.timeline-slider:disabled::-webkit-slider-thumb,
-.timeline-slider:disabled::-moz-range-thumb {
-  background: #94a3b8;
-  box-shadow: none;
 }
 
 .thoughts-modal-backdrop {

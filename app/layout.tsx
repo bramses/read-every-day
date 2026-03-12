@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Read Every Day",
+  title: "Read Every Day.",
   description: "Track daily reading progress across books",
 };
 
