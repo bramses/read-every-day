@@ -140,6 +140,7 @@ export function ReadingTimeline({ data }: ReadingTimelineProps) {
   const [selectedIndex, setSelectedIndex] = useState(() => Math.max(data.dates.length - 1, 0));
   const [modalState, setModalState] = useState<ThoughtsModalState | null>(null);
   const [barColorByBook, setBarColorByBook] = useState<Record<string, string>>({});
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -203,6 +204,28 @@ export function ReadingTimeline({ data }: ReadingTimelineProps) {
   const maxSliderIndex = Math.max(data.dates.length - 1, 0);
   const boundedSelectedIndex = Math.min(selectedIndex, maxSliderIndex);
   const selectedDate = data.dates[boundedSelectedIndex] ?? null;
+
+  useEffect(() => {
+    if (!isPlaying || maxSliderIndex <= 0 || boundedSelectedIndex >= maxSliderIndex) {
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
+      setSelectedIndex((index) => {
+        const nextIndex = Math.min(index + 1, maxSliderIndex);
+
+        if (nextIndex >= maxSliderIndex) {
+          setIsPlaying(false);
+        }
+
+        return nextIndex;
+      });
+    }, 500);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [isPlaying, boundedSelectedIndex, maxSliderIndex]);
 
   const deltaByKey = useMemo(() => {
     const entriesForBook = new Map<string, RedProgressEntry[]>();
@@ -324,8 +347,27 @@ export function ReadingTimeline({ data }: ReadingTimelineProps) {
           <div className="timeline-header-nav">
             <button
               type="button"
+              className="day-nav-button day-nav-button--play"
+              onClick={() => {
+                if (isPlaying) {
+                  setIsPlaying(false);
+                  return;
+                }
+
+                setSelectedIndex(0);
+                setIsPlaying(true);
+              }}
+              disabled={maxSliderIndex <= 0}
+            >
+              {isPlaying ? "Pause" : "Play"}
+            </button>
+            <button
+              type="button"
               className="day-nav-button"
-              onClick={() => setSelectedIndex((index) => Math.max(index - 1, 0))}
+              onClick={() => {
+                setIsPlaying(false);
+                setSelectedIndex((index) => Math.max(index - 1, 0));
+              }}
               disabled={boundedSelectedIndex <= 0}
             >
               Previous Day
@@ -334,7 +376,10 @@ export function ReadingTimeline({ data }: ReadingTimelineProps) {
             <button
               type="button"
               className="day-nav-button"
-              onClick={() => setSelectedIndex((index) => Math.min(index + 1, maxSliderIndex))}
+              onClick={() => {
+                setIsPlaying(false);
+                setSelectedIndex((index) => Math.min(index + 1, maxSliderIndex));
+              }}
               disabled={boundedSelectedIndex >= maxSliderIndex}
             >
               Next Day
@@ -347,14 +392,17 @@ export function ReadingTimeline({ data }: ReadingTimelineProps) {
         <section className="book-list">
           {currentSlots.map((slot, slotIndex) => {
             const previousSlot = previousSlots[slotIndex];
-            const isNewBook = Boolean(slot && (!previousSlot || previousSlot.book.id !== slot.book.id));
             const wasVacated = Boolean(!slot && previousSlot);
+            // Keep this around in case we bring back new-book enter animation later:
+            // const isNewBook = Boolean(slot && (!previousSlot || previousSlot.book.id !== slot.book.id));
+            // const enterClass = isNewBook ? "book-row--enter" : "";
 
             return (
               <article
                 key={`slot-${slotIndex}`}
                 className={`book-row ${slot ? "book-row--active" : "book-row--empty"} ${
-                  isNewBook ? "book-row--enter" : ""
+                  // enterClass
+                  ""
                 } ${wasVacated ? "book-row--leave" : ""}`}
               >
                 {slot ? (
@@ -455,7 +503,10 @@ export function ReadingTimeline({ data }: ReadingTimelineProps) {
           min={0}
           max={maxSliderIndex}
           value={boundedSelectedIndex}
-          onChange={(event) => setSelectedIndex(Number(event.target.value))}
+          onChange={(event) => {
+            setIsPlaying(false);
+            setSelectedIndex(Number(event.target.value));
+          }}
           disabled={data.dates.length <= 1}
           aria-label="Reading timeline"
         />

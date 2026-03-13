@@ -63,6 +63,7 @@ body {
   display: flex;
   align-items: center;
   gap: clamp(0.45rem, 1.2vw, 0.8rem);
+  flex-wrap: wrap;
 }
 
 .timeline-title {
@@ -94,6 +95,17 @@ body {
 .day-nav-button:hover {
   border-color: #94a3b8;
   background: #f8fafc;
+}
+
+.day-nav-button--play {
+  border-color: #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+}
+
+.day-nav-button--play:hover {
+  border-color: #1d4ed8;
+  background: #1d4ed8;
 }
 
 .day-nav-button:disabled {
